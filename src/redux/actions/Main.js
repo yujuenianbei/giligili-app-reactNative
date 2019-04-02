@@ -1,5 +1,13 @@
+export const LOADING = 'LOADING';
 export const VIDEO_LIST = 'VIDEO_LIST';
 export const VIDEO_GET_LIST = 'VIDEO_GET_LIST';
+
+export function loading(data) {
+  return {
+    type: LOADING,
+    data
+  }
+}
 
 export function videoList(data) {
   return {
@@ -14,17 +22,18 @@ export function videoGetList(data) {
     }
 }
 
-// // 访问登录接口 根据返回结果来划分action属于哪个type,然后返回对象,给reducer处理
-// export function login() {
-//   console.log('登录方法');
-//   return dispatch => {
-//     dispatch(isLogining());
-//     // 模拟用户登录
-//     let result = fetch('https://www.baidu.com/')
-//       .then((res) => {
-//         dispatch(loginSuccess(true, user));
-//       }).catch((e) => {
-//         dispatch(loginError(false));
-//       })
-//   }
-// }
+// 访问登录接口 根据返回结果来划分action属于哪个type,然后返回对象,给reducer处理
+export function videoGetListing() {
+  return dispatch => {
+    dispatch(loading(true));
+    // 模拟用户登录
+    let result = fetch('http://192.168.1.128:3000/api/videoList')
+    .then((res) => {
+      return res.text();
+      })
+      .then((res) => {
+          dispatch(videoList(JSON.parse(res).reqData.videoInfo));
+          dispatch(loading(false));
+      })
+  }
+}

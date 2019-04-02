@@ -1,8 +1,10 @@
 import {
-    VIDEO_LIST
+    VIDEO_LIST,
+    LOADING
   } from '../actions/Main'
 
 const initialState = {
+    loading: false,
     videoListData: [
         {
             data: 1
@@ -15,6 +17,9 @@ export default function loginIn(state = initialState, action) {
     switch (action.type) {
         case VIDEO_LIST: {
             return Object.assign({}, state, { videoListData: data })
+        }
+        case LOADING: {
+            return Object.assign({}, state, { loading: data })
         }
         default:
             return state;

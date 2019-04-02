@@ -6,14 +6,14 @@ import {
     TextInput,
     StyleSheet,
 
-    FlatList,
-    RefreshControl,
-
     TouchableOpacity,
     TouchableHighlight,
     TouchableNativeFeedback,
 
-    // ActivityIndicator,
+    FlatList,
+    RefreshControl,
+
+    ActivityIndicator,
     Modal,
     Picker,
     ProgressBarAndroid
@@ -73,20 +73,7 @@ class Home extends Component {
         super(props);
         this.state = {
             text: '',
-            modalVisible: false,
-            refreshing: false,
-            movies: [
-                {
-                    "video_id": 1553242127271,
-                    "video_name": "Perfect",
-                    "author_name": "Ed Sheeran",
-                    "album_name": "Perfect",
-                    "video_img": "1553246355983.jpg",
-                    "video_url": "1553242125217.mp4",
-                    "video_time": null,
-                    "album_data": "2019-03-22"
-                }
-            ]
+            modalVisible: false
         };
     }
     setModalVisible(visible) {
@@ -97,33 +84,11 @@ class Home extends Component {
     updateList = () =>{
         this.props.GetListing()
     }
-
-
-    
-    fetching =() => {
-        fetch("http://192.168.1.128:3000/api/videoList", {
-            method: 'GET'
-        })
-        .then((response) => response.json())
-        .then((responseData) => {
-            this.setState({
-                movies:responseData.reqData.videoInfo,
-            });
-            this.setState({ refreshing: false });
-        })
-        .catch((error) => {
-                callback(error);
-        });
-    }
-    _onRefresh = () => {
-        this.setState({ refreshing: true });
-        this.fetching()
-    }
     
     render() {
         return (
-            <View style={styles.container}>
-            <View style={styles.header}>
+            <View>
+                <View style={styles.header}>
                     <TouchableNativeFeedback
                         background={TouchableNativeFeedback.SelectableBackground()}
                         onPress={() => {
@@ -156,17 +121,71 @@ class Home extends Component {
                     </TouchableNativeFeedback>
                 </View>
 
-            <FlatList
-                refreshControl={
-                    <RefreshControl
-                        refreshing={this.state.refreshing}
-                        onRefresh={this._onRefresh}
+                <View><Text >{this.props.page.Main.videoListData[0].video_id}</Text></View>
+                <View>
+                    <FlatList
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={this.props.page.Main.loading}
+                                onRefresh={this.props.updateList}
+                            />
+                        }
+                        data={this.props.page.Main.videoListData}
+                        renderItem={({ item }) => <Text style={styles.item}>{item.video_id}</Text>}
                     />
-                }
-                data={this.state.movies}
-                renderItem={({ item }) => <Text style={styles.item}>{item.video_id}</Text>}
-            />
-        </View>
+                </View>
+                <Modal
+                    animationType="slide"
+                    transparent={false}
+                    visible={this.state.modalVisible}
+                    onRequestClose={() => {
+                        alert("Modal has been closed.");
+                        this.setModalVisible(!this.state.modalVisible);
+                    }}
+                >
+                    <View style={{ marginTop: 22 }}>
+                        <View>
+                            <Text>Hello World!</Text>
+
+                            <TouchableHighlight
+                                onPress={() => {
+                                    this.setModalVisible(!this.state.modalVisible);
+                                }}
+                            >
+                                <Text>Hide Modal</Text>
+                            </TouchableHighlight>
+
+
+                            {/* picker　类似select */}
+                            <Picker
+                                selectedValue={this.state.language}
+                                style={{ height: 50, width: 100 }}
+                                onValueChange={(itemValue, itemIndex) => this.setState({ language: itemValue })}>
+                                <Picker.Item label="Java" value="java" />
+                                <Picker.Item label="JavaScript" value="js" />
+                            </Picker>
+
+                            {/* ProgressBarAndroid */}
+                            <ProgressBarAndroid color="#ff4400" />
+                            <ProgressBarAndroid styleAttr="Horizontal" />
+                            <ProgressBarAndroid styleAttr="Horizontal" color="#2196F3" />
+                            <ProgressBarAndroid
+                                styleAttr="Horizontal"
+                                indeterminate={false}
+                                progress={0.5}
+                            />
+
+                            {/* loading */}
+                            <View style={[styles.container, styles.horizontal]}>
+                                <ActivityIndicator size="large" color="#ff4400" />
+                                <ActivityIndicator size="small" color="#00ff00" />
+                                <ActivityIndicator size="large" color="#0000ff" />
+                                <ActivityIndicator size="small" color="#f45420" />
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+            </View>
         );
     }
 }
