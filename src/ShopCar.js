@@ -14,7 +14,11 @@ export default class ShopCar extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <TouchableOpacity style={styles.button} activeOpacity={0.5}>
+                <TouchableOpacity style={styles.button} activeOpacity={0.5} onPress={
+                    () => {
+                        this.props.navigation.navigate('Details', {user: '从shop跳转来'})
+                    }
+                }>
                     <Text style={{color: 'white'}}>购物车</Text>
                 </TouchableOpacity>
             </View>

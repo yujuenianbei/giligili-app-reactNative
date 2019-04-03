@@ -6,6 +6,7 @@ import {
     TextInput,
     StyleSheet,
 
+    ScrollView,
     FlatList,
     RefreshControl,
 
@@ -20,13 +21,13 @@ import {
 } from 'react-native';
 import * as Actions from './redux/actions/Main';
 import { connect } from 'react-redux';
-
-
+const dimensions = require('Dimensions')
+const { width } = dimensions.get('window');
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        display: 'flex',
+        flexGrow: 1,
+        flexBasis: '100%',
         backgroundColor: '#F5FCFF',
     },
     header: {
@@ -54,6 +55,58 @@ const styles = StyleSheet.create({
         padding: 5,
         fontSize: 14
     },
+    // 
+    banner: {
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    bannerContent: {
+        flexGrow: 1,
+        flexShrink: 1,
+    },
+    bannerStyle: {
+        width: width,
+        height: 100,
+    },
+
+    // 
+    circleWrapperStyle: {
+        display: 'flex',
+        flexBasis: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        left: '30%',
+        bottom: 10,
+        position: 'absolute'
+    },
+    circleStyle: {
+        width: '10%',
+        height: 3,
+        marginLeft: 5,
+        marginRight: 5,
+        backgroundColor: '#fff'
+    },
+    // 
+    videoList: {
+        display: 'flex',
+        flexDirection: 'row',
+    },
+    videoListContent: {
+        flexGrow: 1,
+        flexShrink: 1,
+        flexBasis: 'auto',
+        marginTop: 5,
+        marginBottom: 5,
+        marginLeft: 10,
+        marginRight: 10,
+        backgroundColor: '#eee',
+        borderRadius: 5
+    },
+    videImg: {
+        borderRadius: 5,
+        height: 120
+    },
     button: {
         width: 120,
         height: 45,
@@ -74,56 +127,70 @@ class Home extends Component {
         this.state = {
             text: '',
             modalVisible: false,
-            refreshing: false,
-            movies: [
-                {
-                    "video_id": 1553242127271,
-                    "video_name": "Perfect",
-                    "author_name": "Ed Sheeran",
-                    "album_name": "Perfect",
-                    "video_img": "1553246355983.jpg",
-                    "video_url": "1553242125217.mp4",
-                    "video_time": null,
-                    "album_data": "2019-03-22"
-                }
-            ]
+            currentPage: 0
         };
     }
     setModalVisible(visible) {
         this.setState({ modalVisible: visible });
     }
     componentWillMount() {
+        this.props.GetVideoListing();
+        this.props.GetBannerListing()
     }
-    updateList = () =>{
-        this.props.GetListing()
+    componentDidMount() {
+        this.startTimer();
+    }
+    updateList = () => {
+        this.props.GetVideoListing();
+        this.props.GetBannerListing()
     }
 
+    // banner
+    renderScrollView = () => {
+        return this.props.page.Main.banner.map((item, index) => {
+            return <View style={styles.bannerContent}>
+                <Image
+                    key={item + index}
+                    style={styles.bannerStyle}
+                    source={{ uri: 'http://192.168.1.128:3000/api/img/' + item.img_img }}
+                />
+            </View>
+        })
+    }
+    //绘制圆点
+    renderCircle = () => {
+        return this.props.page.Main.banner.map((item, index) => {
+            var style = {};
+            if (index === this.state.currentPage) {
+                style = { width: '10%', backgroundColor: '#0093ff' };
+            }
+            return <View key={`item${index}`} style={[styles.circleStyle, style]}></View>
+        })
+    }
+    //开始拖拽
+    handleScrollBegin = () => {
+        clearInterval(this.timer);
+    }
+    //　停止拖拽 
+    handleScrollEnd = (e) => {
+        var x = e.nativeEvent.contentOffset.x;
+        var position = Math.round(x / width)
+        this.setState({ currentPage: position })
+        this.startTimer();
+    }
+    // 自动播放定时器
+    startTimer = () => {
+        this.timer = setInterval(() => {
+            var currentPage = ++this.state.currentPage == this.props.page.Main.banner.length ? 0 : this.state.currentPage;
+            this.refs.scrollView.scrollTo({ x: currentPage * width, y: 0, animated: true });
+            this.setState({ currentPage });
+        }, 5000)
+    }
 
-    
-    fetching =() => {
-        fetch("http://192.168.1.128:3000/api/videoList", {
-            method: 'GET'
-        })
-        .then((response) => response.json())
-        .then((responseData) => {
-            this.setState({
-                movies:responseData.reqData.videoInfo,
-            });
-            this.setState({ refreshing: false });
-        })
-        .catch((error) => {
-                callback(error);
-        });
-    }
-    _onRefresh = () => {
-        this.setState({ refreshing: true });
-        this.fetching()
-    }
-    
     render() {
         return (
             <View style={styles.container}>
-            <View style={styles.header}>
+                <View style={styles.header}>
                     <TouchableNativeFeedback
                         background={TouchableNativeFeedback.SelectableBackground()}
                         onPress={() => {
@@ -156,17 +223,52 @@ class Home extends Component {
                     </TouchableNativeFeedback>
                 </View>
 
-            <FlatList
-                refreshControl={
-                    <RefreshControl
-                        refreshing={this.state.refreshing}
-                        onRefresh={this._onRefresh}
+                <View style={styles.banner}>
+                    <ScrollView
+                        ref="scrollView"
+                        scrollEnabled={true} //内容不能滚动
+                        horizontal={true}
+                        pagingEnabled={true}
+                        showsHorizontalScrollIndicator={false}
+                        onMomentumScrollEnd={e => this.handleScrollEnd(e)}
+                        onTouchStart={this.handleScrollBegin}
+                    >
+                        {this.renderScrollView()}
+                    </ScrollView>
+                    <View style={styles.circleWrapperStyle}>
+                        {this.renderCircle()}
+                    </View>
+                </View>
+                <View style={styles.videoList}>
+                    <FlatList
+                        numColumns={2}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={this.props.page.Main.loading}
+                                onRefresh={this.updateList}
+                            />
+                        }
+                        data={this.props.page.Main.videoListData}
+                        renderItem={({ item, index }) => (
+                            <View style={styles.videoListContent} >
+                                <TouchableOpacity activeOpacity={0.9} onPress={
+                                    () => {
+                                        this.props.navigation.navigate('Details', {user: item.video_name})
+
+                                    }
+                                }>
+                                    <Image
+                                        key={item + index}
+                                        style={styles.videImg}
+                                        source={{ uri: 'http://192.168.1.128:3000/api/img/' + item.video_img }}
+                                    />
+                                </TouchableOpacity>
+                                <Text style={styles.item}>{item.video_name}</Text>
+                            </View>
+                        )}
                     />
-                }
-                data={this.state.movies}
-                renderItem={({ item }) => <Text style={styles.item}>{item.video_id}</Text>}
-            />
-        </View>
+                </View>
+            </View>
         );
     }
 }
@@ -179,7 +281,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        GetListing: () => { dispatch(Actions.videoGetListing()) },
+        GetVideoListing: () => { dispatch(Actions.videoGetListing()) },
+        GetBannerListing: () => { dispatch(Actions.bannerGetListing()) },
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

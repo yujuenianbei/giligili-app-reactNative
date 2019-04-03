@@ -1,6 +1,6 @@
 export const LOADING = 'LOADING';
 export const VIDEO_LIST = 'VIDEO_LIST';
-export const VIDEO_GET_LIST = 'VIDEO_GET_LIST';
+export const BANNER_LIST = 'BANNER_LIST';
 
 export function loading(data) {
   return {
@@ -15,12 +15,14 @@ export function videoList(data) {
     data
   }
 }
-export function videoGetList(data) {
+
+export function bannerList(data) {
     return {
-      type: VIDEO_GET_LIST,
+      type: BANNER_LIST,
       data
     }
 }
+
 
 // 访问登录接口 根据返回结果来划分action属于哪个type,然后返回对象,给reducer处理
 export function videoGetListing() {
@@ -33,6 +35,22 @@ export function videoGetListing() {
       })
       .then((res) => {
           dispatch(videoList(JSON.parse(res).reqData.videoInfo));
+          dispatch(loading(false));
+      })
+  }
+}
+
+
+export function bannerGetListing() {
+  return dispatch => {
+    dispatch(loading(true));
+    // 模拟用户登录
+    let result = fetch('http://192.168.1.128:3000/api/imgList')
+    .then((res) => {
+      return res.text();
+      })
+      .then((res) => {
+          dispatch(bannerList(JSON.parse(res).reqData.imgInfo));
           dispatch(loading(false));
       })
   }

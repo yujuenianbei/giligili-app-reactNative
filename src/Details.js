@@ -16,7 +16,7 @@ export default class Details extends Component {
 
     static navigationOptions = ({navigation, screenProps}) => ({
 
-        headerTitle: '详情',
+        headerTitle: `${navigation.state.params.user}`,
         //设置滑动返回的距离
         gestureResponseDistance: {horizontal: 300},
 
@@ -46,7 +46,7 @@ export default class Details extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text style={{color: 'black'}}>6657</Text>
+                <Text style={{color: 'black'}}>{this.props.navigation.state.user}</Text>
             </View>
         );
     }
