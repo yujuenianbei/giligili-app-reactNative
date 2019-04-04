@@ -253,8 +253,7 @@ class Home extends Component {
                             <View style={styles.videoListContent} >
                                 <TouchableOpacity activeOpacity={0.9} onPress={
                                     () => {
-                                        this.props.navigation.navigate('Details', {user: item.video_name})
-
+                                        this.props.navigation.navigate('Details', {id: item.video_id, name: item.video_name})
                                     }
                                 }>
                                     <Image
