@@ -22,10 +22,8 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         flexDirection: 'column',
-        // justifyContent: 'center',
-        // alignItems: 'center',
         backgroundColor: '#F5FCFF',
-        width: '100%'
+        flexBasis: '100%'
     },
     button: {
         width: 240,
@@ -45,6 +43,7 @@ const styles = StyleSheet.create({
         //居中显示
         alignSelf: 'center',
     },
+
     videContainer: {
         height: 230,
     },
@@ -64,11 +63,12 @@ const styles = StyleSheet.create({
         width: 20,
         height: 20,
         backgroundColor: '#ccc',
-        textAlign: 'center'
-    }, 
+    },
     videoProgress: {
-        width: 100,
-        height: 20
+        flexBasis: '100%',
+        // width: 100,
+        height: 20,
+        backgroundColor: '#ff1010'
     },
     // 
     videoInfo: {
@@ -113,14 +113,15 @@ class Details extends Component {
 
     // 播放/暂停
     playControl = () => {
-        return <TouchableOpacity onPress={() => {
-            this.setState({ paused: !this.state.paused })
-        }}>
-            <Text style={styles.videoState}>
-                {this.state.paused ? 'on' : 'off'}
-            </Text>
-            <ProgressBarAndroid style={styles.videoProgress} styleAttr="Horizontal" />
-        </TouchableOpacity>
+        return <View style={styles.videoState}>
+            <TouchableOpacity onPress={() => {
+                this.setState({ paused: !this.state.paused })
+            }}>
+                <Text >
+                    {this.state.paused ? 'on' : 'off'}
+                </Text>
+            </TouchableOpacity>
+        </View>
     }
 
     render() {
@@ -145,6 +146,9 @@ class Details extends Component {
                 </View>
                 <View style={styles.videoController}>
                     {this.playControl()}
+                    <View style={styles.videoProgress}>
+                        <ProgressBarAndroid styleAttr="Horizontal" />
+                    </View>
                 </View>
                 {/* <View style={styles.videoInfo}>
                     <Text style={{ color: 'black' }}>{this.props.navigation.state.params.id}</Text>
