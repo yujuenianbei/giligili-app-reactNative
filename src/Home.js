@@ -5,6 +5,7 @@ import {
     Image,
     TextInput,
     StyleSheet,
+    StatusBar,
 
     ScrollView,
     FlatList,
@@ -21,6 +22,7 @@ import {
 } from 'react-native';
 import * as Actions from './redux/actions/Main';
 import { connect } from 'react-redux';
+import { website } from '../webConfig'
 const dimensions = require('Dimensions')
 const { width } = dimensions.get('window');
 const styles = StyleSheet.create({
@@ -28,33 +30,35 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexGrow: 1,
         flexBasis: '100%',
-        backgroundColor: '#F5FCFF',
+        backgroundColor: '#f3f3f3',
     },
-    header: {
-        display: 'flex',
-        flexDirection: 'row',
-        height: 40,
-        width: '100%',
-        backgroundColor: '#0093ff',
-        justifyContent: 'space-between',
-    },
-    headerButton: {
-        width: 40,
-        height: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    headerSearch: {
-        width: '50%',
-        marginTop: 5,
-        marginBottom: 5,
-        backgroundColor: '#fff',
-        borderRadius: 5,
-        borderColor: '#fff',
-        borderWidth: 1,
-        padding: 5,
-        fontSize: 14
-    },
+
+    // header: {
+    //     display: 'flex',
+    //     flexDirection: 'row',
+    //     height: 55,
+    //     width: '100%',
+    //     backgroundColor: '#0093ff',
+    //     justifyContent: 'space-between',
+    // },
+    // headerButton: {
+    //     width: 55,
+    //     height: 55,
+    //     alignItems: 'center',
+    //     justifyContent: 'center',
+    // },
+    // headerSearch: {
+    //     width: '50%',
+    //     marginTop: 10,
+    //     marginBottom: 10,
+    //     backgroundColor: '#fff',
+    //     borderRadius: 5,
+    //     borderColor: '#fff',
+    //     borderWidth: 1,
+    //     padding: 5,
+    //     fontSize: 14
+    // },
+
     // 
     banner: {
         display: 'flex',
@@ -66,7 +70,7 @@ const styles = StyleSheet.create({
     },
     bannerStyle: {
         width: width,
-        height: 100,
+        height: 60,
     },
 
     // 
@@ -87,25 +91,31 @@ const styles = StyleSheet.create({
         marginRight: 5,
         backgroundColor: '#fff'
     },
+
     // 
     videoList: {
         display: 'flex',
         flexDirection: 'row',
+        paddingBottom: 60
     },
     videoListContent: {
         flexGrow: 1,
         flexShrink: 1,
-        flexBasis: 'auto',
+        flexBasis: '50%',
         marginTop: 5,
         marginBottom: 5,
         marginLeft: 10,
         marginRight: 10,
-        backgroundColor: '#eee',
-        borderRadius: 5
+        backgroundColor: '#fff',
+        borderRadius: 5,
     },
     videImg: {
         borderRadius: 5,
         height: 120
+    },
+    videoInfo: {
+        marginLeft: 5,
+        lineHeight: 30
     },
     button: {
         width: 120,
@@ -114,13 +124,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#4398ff',
-    }
+    },
 });
 
 class Home extends Component {
     static navigationOptions = ({ navigation, screenProps }) => ({
         //隐藏顶部导航栏
-        header: null,
+        // header: null,
     });
     constructor(props) {
         super(props);
@@ -133,12 +143,21 @@ class Home extends Component {
     setModalVisible(visible) {
         this.setState({ modalVisible: visible });
     }
+    componentDidMount() {
+        this._navListener = this.props.navigation.addListener('didFocus', () => {
+            StatusBar.setBarStyle('light-content');
+            StatusBar.setBackgroundColor('#00000000');
+            StatusBar.setTranslucent(true)
+        });
+        this.startTimer();
+    }
+
+    componentWillUnmount() {
+        this._navListener.remove();
+    }
     componentWillMount() {
         this.props.GetVideoListing();
         this.props.GetBannerListing()
-    }
-    componentDidMount() {
-        this.startTimer();
     }
     updateList = () => {
         this.props.GetVideoListing();
@@ -152,7 +171,7 @@ class Home extends Component {
                 <Image
                     key={item + index}
                     style={styles.bannerStyle}
-                    source={{ uri: 'http://192.168.1.128:3000/api/img/' + item.img_img }}
+                    source={{ uri: website + '/api/img/' + item.img_img }}
                 />
             </View>
         })
@@ -190,7 +209,11 @@ class Home extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.header}>
+                {/* <StatusBar
+                        barStyle="light-content"
+                        backgroundColor="#6a51ae"
+                        /> */}
+                {/* <View style={styles.header}>
                     <TouchableNativeFeedback
                         background={TouchableNativeFeedback.SelectableBackground()}
                         onPress={() => {
@@ -221,8 +244,7 @@ class Home extends Component {
                             />
                         </View>
                     </TouchableNativeFeedback>
-                </View>
-
+                </View> */}
                 <View style={styles.banner}>
                     <ScrollView
                         ref="scrollView"
@@ -250,19 +272,19 @@ class Home extends Component {
                         }
                         data={this.props.page.Main.videoListData}
                         renderItem={({ item, index }) => (
-                            <View style={styles.videoListContent} >
+                            <View key={item + index} style={styles.videoListContent} >
                                 <TouchableOpacity activeOpacity={0.9} onPress={
                                     () => {
-                                        this.props.navigation.navigate('Details', {id: item.video_id, name: item.video_name})
+                                        this.props.navigation.navigate('Details', { id: item.video_id, name: item.video_name })
                                     }
                                 }>
                                     <Image
                                         key={item + index}
                                         style={styles.videImg}
-                                        source={{ uri: 'http://192.168.1.128:3000/api/img/' + item.video_img }}
+                                        source={{ uri: website + '/api/img/' + item.video_img }}
                                     />
                                 </TouchableOpacity>
-                                <Text style={styles.item}>{item.video_name}</Text>
+                                <Text style={styles.videoInfo}>{item.video_name}</Text>
                             </View>
                         )}
                     />
