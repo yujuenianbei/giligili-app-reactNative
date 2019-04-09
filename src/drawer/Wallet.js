@@ -46,7 +46,7 @@ export default class Wallet extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text style={{color: 'black'}}>我的钱包页面</Text>
+                <Text style={{color: 'black'}}>{this.props.navigation.state.params.id}</Text>
             </View>
         );
     }

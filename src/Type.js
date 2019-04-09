@@ -7,6 +7,8 @@ import {
     TouchableOpacity,
     RefreshControl
 } from 'react-native';
+import { website } from '../webConfig'
+
 
 export default class Type extends Component {
     static navigationOptions = ({ navigation, screenProps }) => ({
@@ -32,7 +34,7 @@ export default class Type extends Component {
         };
     }
     fetching =() => {
-        fetch("http://192.168.1.128:3000/api/videoList", {
+        fetch( website + "/api/videoList", {
             method: 'GET'
         })
         .then((response) => response.json())

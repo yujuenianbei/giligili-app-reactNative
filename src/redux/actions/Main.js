@@ -1,3 +1,4 @@
+import { website } from '../../../webConfig'
 export const LOADING = 'LOADING';
 export const VIDEO_LIST = 'VIDEO_LIST';
 export const BANNER_LIST = 'BANNER_LIST';
@@ -29,7 +30,7 @@ export function videoGetListing() {
   return dispatch => {
     dispatch(loading(true));
     // 模拟用户登录
-    let result = fetch('http://192.168.1.128:3000/api/videoList')
+    let result = fetch( website + '/api/videoList')
     .then((res) => {
       return res.text();
       })
@@ -45,7 +46,7 @@ export function bannerGetListing() {
   return dispatch => {
     dispatch(loading(true));
     // 模拟用户登录
-    let result = fetch('http://192.168.1.128:3000/api/imgList')
+    let result = fetch( website + '/api/imgList')
     .then((res) => {
       return res.text();
       })

@@ -48,6 +48,9 @@
 //   },
 // });
 import React, { Component } from 'react';
+import {
+    StatusBar,
+} from 'react-native';
 import { Provider } from 'react-redux';
 import configureStore from './src/redux/store/ConfigStore';
 const store = configureStore();
@@ -60,7 +63,7 @@ export default class Pages extends Component{
     render(){
         return(
                 <Provider store={store}>
-                    <Main/>
+                    <Main screenProps={{ statusBarHeight: StatusBar.currentHeight}}/>
                 </Provider>
         )
     }

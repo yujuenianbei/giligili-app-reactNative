@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    .wrapper{
+        display: flex;
+        width: 1000px;
+        height: 300px;
+    }
+    .p1{
+        flex: 2;
+        border: 1px solid red;
+    }
+    .p2{
+        border: 1px solid red;
+        flex: 1;
+        display: block;
+        overflow: scroll;
+    }
+    .p3{
+        width: 700px;
+        height: 200px;
+    }
+</style>
+<body>
+<div class="wrapper">
+    <div class="p1"></div>
+    <div class="p2">
+            <div class="p3">256</div>
+    </div>
+</div>
+</body>
+</html>
