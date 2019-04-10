@@ -10,7 +10,7 @@ import {
     TabNavigator,
     StackNavigator,
     DrawerNavigator,
-    DrawerActions 
+    DrawerActions
 } from 'react-navigation';
 // 页面跳转的动画效果
 import StackViewStyleInterpolator from "react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator";
@@ -197,21 +197,22 @@ const Tab = TabNavigator({
             }
         },
     });
-
 /*
  * 配置堆栈导航
  */
 const Stack = StackNavigator({
     Tab: {
         screen: Tab,
-        navigationOptions:({navigation, screenProps}) =>({
+        navigationOptions: ({ navigation, screenProps }) => ({
+            //允许使用返回手势
+            gesturesEnabled: true,
             // header: null
-            headerTitle:  <TextInput
-            style={styles.headerSearch}
-            placeholder="搜索"
-            placeholderTextColor="#555"
-            onChangeText={(text) => this.setState({ text })}
-        />,
+            headerTitle: <TextInput
+                style={styles.headerSearch}
+                placeholder="搜索"
+                placeholderTextColor="#555"
+                onChangeText={(text) => this.setState({ text })}
+            />,
             //设置滑动返回的距离
             gestureResponseDistance: { horizontal: 300 },
             //是否开启手势滑动返回，android 默认关闭 ios打开
@@ -219,7 +220,7 @@ const Stack = StackNavigator({
             //设置跳转页面左侧返回箭头后面的文字，默认是上一个页面的标题
             headerBackTitle: null,
             //导航栏的样式
-            headerStyle: { backgroundColor: '#0093ff', paddingTop: screenProps.statusBarHeight, height: screenProps.statusBarHeight+50},
+            headerStyle: { backgroundColor: '#0093ff', paddingTop: screenProps.statusBarHeight, height: screenProps.statusBarHeight + 50 },
             //导航栏文字的样式
             headerTitleStyle: {
                 color: 'white',
@@ -255,43 +256,30 @@ const Stack = StackNavigator({
             </TouchableNativeFeedback></View>),
         })
     },
-    VideoDetailTwo: {
-        screen: VideoDetailTwo,
-    },
-    VideoDetailOne: {
-        screen: VideoDetailOne,
-    },
-    //DrawerNavigator跳转的页面也必须在这里注册
-    Wallet: {
-        screen: Wallet,
-    },
-    CardCoupons: {
-        screen: CardCoupons,
-    },
-    Invite: {
-        screen: Invite,
-    },
+
 }, {
         headerMode: 'screen',
         // 添加跳转页面的动画效果
-        transitionConfig:()=>({
+        transitionConfig: () => ({
             // 只要修改最后的forVertical就可以实现不同的动画了。
-             screenInterpolator:StackViewStyleInterpolator.forHorizontal,
-           })
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal,
+        })
     });
-
 
 /**
  * 配置侧滑菜单
  */
-export default Drawer = DrawerNavigator({
+const Drawer = DrawerNavigator({
     Home: {
         screen: Stack,
         navigationOptions: {
-            contentComponent: ()=> {<Image
-                source={require('../images/wallet.png')}
-                style={[styles.icon, { tintColor: tintColor }]}
-            />},
+            drawerLockMode: 'unlocked', //here
+            contentComponent: () => {
+                <Image
+                    source={require('../images/wallet.png')}
+                    style={[styles.icon, { tintColor: tintColor }]}
+                />
+            },
             drawerLabel: '首页',
             drawerIcon: ({ tintColor }) => (
                 <Image
@@ -338,7 +326,8 @@ export default Drawer = DrawerNavigator({
         }
     },
 }, {
-        style: {marginTop : 20},
+        drawerLockMode: 'locked-closed', //here
+        style: { marginTop: 20 },
         drawerBackgroundColor: '#0093ff',
         drawerWidth: 250, // 展示的宽度
         drawerPosition: 'left', // 抽屉在左边还是右边
@@ -352,7 +341,7 @@ export default Drawer = DrawerNavigator({
             /**
              * 当前选中 tab 的背景色调
              */
-            activeBackgroundColor : '#ffffff',
+            activeBackgroundColor: '#ffffff',
             /**
              * 未选中时的 色调
              */
@@ -386,11 +375,11 @@ export default Drawer = DrawerNavigator({
                 color: '#fff'
             },
             // 如果标签是字符串，该属性可以覆盖活动标签的Text的style (与 labelStyle合并)
-            activeLabelStyle : {
+            activeLabelStyle: {
                 color: '#0093ff'
             },
             // 如果标签是字符串，该属性可以覆盖非活动标签的Text的style  (与labelStyle合并)
-            inactiveLabelStyle : {
+            inactiveLabelStyle: {
 
             },
 
@@ -402,3 +391,55 @@ export default Drawer = DrawerNavigator({
             }
         }
     });
+
+export default Stacker = StackNavigator({
+    Drawer: {
+        screen: Drawer,
+        navigationOptions: ({ navigation, screenProps }) => ({
+            header: null
+        })
+    },
+    VideoDetailTwo: {
+        screen: VideoDetailTwo,
+        navigationOptions: ({ navigation, screenProps }) => ({
+            //允许使用返回手势
+            gesturesEnabled: true,
+        })
+    },
+    VideoDetailOne: {
+        screen: VideoDetailOne,
+        navigationOptions: ({ navigation, screenProps }) => ({
+            //允许使用返回手势
+            gesturesEnabled: true,
+        })
+    },
+    //DrawerNavigator跳转的页面也必须在这里注册
+    Wallet: {
+        screen: Wallet,
+        navigationOptions: ({ navigation, screenProps }) => ({
+            //允许使用返回手势
+            gesturesEnabled: true,
+        })
+    },
+    CardCoupons: {
+        screen: CardCoupons,
+        navigationOptions: ({ navigation, screenProps }) => ({
+            //允许使用返回手势
+            gesturesEnabled: true,
+        })
+    },
+    Invite: {
+        screen: Invite,
+        navigationOptions: ({ navigation, screenProps }) => ({
+            //允许使用返回手势
+            gesturesEnabled: true,
+        })
+    }
+},{
+    headerMode: 'screen',
+    // 添加跳转页面的动画效果
+    transitionConfig: () => ({
+        // 只要修改最后的forVertical就可以实现不同的动画了。
+        screenInterpolator: StackViewStyleInterpolator.forHorizontal,
+    }),
+});

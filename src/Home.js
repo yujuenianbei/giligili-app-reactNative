@@ -278,7 +278,7 @@ class Home extends Component {
                                     keys={item + index + 'videoImgButton'}
                                     onPress={
                                         () => {
-                                            this.props.navigation.navigate('Details', { id: item.video_id, name: item.video_name })
+                                            this.props.navigation.navigate('VideoDetailOne', { id: item.video_id, name: item.video_name })
                                         }
                                     }>
                                     <Image

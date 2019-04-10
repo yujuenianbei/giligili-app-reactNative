@@ -192,6 +192,7 @@ class VideoDetailOne extends Component {
         this.showControllers()
     }
     static navigationOptions = ({ navigation, screenProps }) => ({
+        header: null,
         headerStyle: { backgroundColor: '#0093ff', paddingTop: screenProps.statusBarHeight, height: 0},
         // headerTitle: `${navigation.state.params.name}`,
         // //设置滑动返回的距离
