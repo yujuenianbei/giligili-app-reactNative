@@ -21,6 +21,8 @@ import Home from './Home';
 import Type from './Type';
 import ShopCar from './ShopCar';
 import Mine from './Mine';
+// 设置
+import Setting from './layout/setting/index'
 
 import VideoDetailOne from './video/VideoDetailOne';
 import VideoDetailTwo from './video/VideoDetailTwo';
@@ -205,6 +207,8 @@ const Stack = StackNavigator({
     Tab: {
         screen: Tab,
         navigationOptions: ({ navigation, screenProps }) => ({
+            //允许使用返回手势
+            gesturesEnabled: true,
             // header: null
             headerTitle: <TextInput
                 style={styles.headerSearch}
@@ -236,7 +240,8 @@ const Stack = StackNavigator({
             headerRight: (<View><TouchableNativeFeedback
                 background={TouchableNativeFeedback.SelectableBackground()}
                 onPress={() => {
-                    // this.setModalVisible(true);
+                    // 在定义页直接调用 在别的页面要使用this.props.navigation.navigate('Setting')
+                    navigation.navigate('Setting')
                 }}>
                 <View style={styles.headerButton}>
                     <Icon name='setting' size={26} color='#ffffff'></Icon>
@@ -247,7 +252,6 @@ const Stack = StackNavigator({
                 background={TouchableNativeFeedback.SelectableBackground()}
                 onPress={() => {
                     navigation.dispatch(DrawerActions.openDrawer())
-                    // this.props.navigation.openDrawer()
                 }}>
                 <View style={styles.headerButton}>
                     <Icon name='bars' size={26} color='#ffffff'></Icon>
@@ -277,13 +281,13 @@ const Drawer = DrawerNavigator({
     Home: {
         screen: Stack,
         navigationOptions: {
+            // contentComponent: () => {
+            //     <Image
+            //         source={require('../images/wallet.png')}
+            //         style={[styles.icon, { tintColor: tintColor }]}
+            //     />
+            // },
             drawerLockMode: 'unlocked', //here
-            contentComponent: () => {
-                <Image
-                    source={require('../images/wallet.png')}
-                    style={[styles.icon, { tintColor: tintColor }]}
-                />
-            },
             drawerLabel: '首页',
             drawerIcon: ({ tintColor }) => (
                 <Image
@@ -333,7 +337,7 @@ const Drawer = DrawerNavigator({
         drawerLockMode: 'locked-closed', //here
         style: { marginTop: 20 },
         drawerBackgroundColor: '#0093ff',
-        drawerWidth: 250, // 展示的宽度
+        drawerWidth: 300, // 展示的宽度
         drawerPosition: 'left', // 抽屉在左边还是右边
         contentOptions: {
             items: [],
@@ -401,6 +405,13 @@ export default Stacker = StackNavigator({
         screen: Drawer,
         navigationOptions: ({ navigation, screenProps }) => ({
             header: null
+        })
+    },
+    Setting: {
+        screen: Setting,
+        navigationOptions: ({ navigation, screenProps }) => ({
+            //允许使用返回手势
+            // gesturesEnabled: true,
         })
     },
     VideoDetailTwo: {

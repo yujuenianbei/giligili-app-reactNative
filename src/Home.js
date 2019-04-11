@@ -144,6 +144,7 @@ class Home extends Component {
         this.setState({ modalVisible: visible });
     }
     componentDidMount() {
+        // 设置状态栏样式
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             StatusBar.setBarStyle('light-content');
             StatusBar.setBackgroundColor('#00000000');
