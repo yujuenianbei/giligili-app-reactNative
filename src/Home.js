@@ -183,7 +183,7 @@ class Home extends Component {
             if (index === this.state.currentPage) {
                 style = { width: '10%', backgroundColor: '#0093ff' };
             }
-            return <View key={`item${index}banner`} style={[styles.circleStyle, style]}></View>
+            return <View key={Math.random().toString()} style={[styles.circleStyle, style]}></View>
         })
     }
     //开始拖拽
@@ -263,6 +263,7 @@ class Home extends Component {
                 </View>
                 <View style={styles.videoList}>
                     <FlatList
+                        key={Math.random().toString()}
                         numColumns={2}
                         refreshControl={
                             <RefreshControl

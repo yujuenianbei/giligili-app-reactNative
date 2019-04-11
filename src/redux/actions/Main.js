@@ -45,13 +45,12 @@ export function videoGetListing() {
 export function bannerGetListing() {
   return dispatch => {
     dispatch(loading(true));
-    // 模拟用户登录
-    let result = fetch( website + '/api/imgList')
+    let result = fetch( website + '/api/imgList/1')
     .then((res) => {
       return res.text();
       })
       .then((res) => {
-          dispatch(bannerList(JSON.parse(res).reqData.imgInfo));
+          dispatch(bannerList(JSON.parse(res).reqData.imgTypeList));
           dispatch(loading(false));
       })
   }

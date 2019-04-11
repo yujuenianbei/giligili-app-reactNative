@@ -162,6 +162,7 @@ const Tab = TabNavigator({
     },
 
 }, {
+        initialRouteName: 'Home',
         //设置TabNavigator的位置
         tabBarPosition: 'bottom',
         //是否在更改标签时显示动画
@@ -204,8 +205,6 @@ const Stack = StackNavigator({
     Tab: {
         screen: Tab,
         navigationOptions: ({ navigation, screenProps }) => ({
-            //允许使用返回手势
-            gesturesEnabled: true,
             // header: null
             headerTitle: <TextInput
                 style={styles.headerSearch}
@@ -263,7 +262,12 @@ const Stack = StackNavigator({
         transitionConfig: () => ({
             // 只要修改最后的forVertical就可以实现不同的动画了。
             screenInterpolator: StackViewStyleInterpolator.forHorizontal,
-        })
+        }),
+        navigationOptions: ({ navigation, screenProps }) => ({
+            gesturesEnabled: true,
+            drawerLockMode:'locked-closed',
+        }),
+
     });
 
 /**
